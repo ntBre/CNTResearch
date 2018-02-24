@@ -70,5 +70,9 @@ def skip(iterator, file, num):
 		iterator = file.next()
 	return iterator
 
+def toNormalCoord(low, high, relativeCoord):
+	convertedCoord = (high - low)*relativeCoord + low
+	return convertedCoord
+
 innertube(5)
 
