@@ -31,22 +31,22 @@ def innertube(z_sections):
 	frame_counter = 0
 	atom_counter = 0
 	total_counter = 0
-	totalAtoms = 0 
+	total_atoms = 0
 
 	for line in infile:
 		if line == "ITEM: TIMESTEP\n":
 			line = skip(line, infile, 2)
 			split = infile.next().split()
-			totalAtoms = split[0]
+			total_atoms = split[0]
 			split = infile.next().split()
-			xlo = split[0] 
-			xhi = split[1]
+			x_low = split[0]
+			x_high = split[1]
 			split = infile.next().split()
-			ylo = split[0]
-			yhi = split[1]
+			y_low = split[0]
+			y_high = split[1]
 			split = infile.next().split()
-			zlo = split[0]
-			zhi = split[1]
+			z_low = split[0]
+			z_high = split[1]
 			line = skip(line, infile, 3)
 			frame_counter += 1
 			atoms = True
@@ -57,18 +57,18 @@ def innertube(z_sections):
 			if int(split[1]) < 6:
 				types[int(split[1])-1] += 1
 				atom_counter += 1
-		if total_counter == int(totalAtoms):
+		if total_counter == int(total_atoms):
 			print types, frame_counter, atom_counter, total_counter
 			atom_counter = 0
 			total_counter = 0
 			types = [0 for i in range(5)]
 			atoms = False
 
-def skip(line, infile, nLines):
+def skip(iterator, file, num):
 	"""Skips nLines in the file infile"""
-	for i in range(nLines):
-		line = infile.next()
-	return line
+	for i in range(num):
+		iterator = file.next()
+	return iterator
 
 innertube(5)
 
