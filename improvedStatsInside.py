@@ -64,11 +64,15 @@ def innertube(z_sections):
 		if atoms:
 			total_counter += 1
 			split = line.split()
-			if int(split[1]) < 6:
+			z = to_normal_coord(z_low, z_high, split[4])
+			if int(split[1]) < 6 and z > 0 and z < 80:
 				types[int(split[1])-1] += 1
 				atom_counter += 1
 
 		if total_counter == int(total_atoms):
+			for i in range(len(types)):
+				types[i] = float(types[i])/float(atom_counter)
+			print types
 			atom_counter = 0
 			total_counter = 0
 			types = [0 for i in range(5)]
@@ -76,11 +80,14 @@ def innertube(z_sections):
 
 def skip(iterator, file, num):
 	"""Skips nLines in the file infile"""
+
 	for i in range(num):
 		iterator = file.next()
 	return iterator
 
 def to_normal_coord(low, high, relative_coord):
+	"""Converts the default lammpstrj coordinates to normal coordinates"""
+
 	low = float(low)
 	high = float(high)
 	relative_coord = float(relative_coord)
