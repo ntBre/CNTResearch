@@ -28,10 +28,10 @@ def innertube(sections):
 	out4.write("#Frame LDL\n")
 	out5.write("#Frame HDL\n")
 	
-	types = [[0 for i in range(sections)],[0 for i in range(sections)],[0 for i in range(sections)],[0 for i in range(sections)],[0 for i in range(sections)]]
+	types = [[0] * 5 for i in range(sections)]
 	atoms = False
 	frame_counter = 0
-	water_counter = 0
+	water_counter = [0 for i in range(sections)] 
 	total_counter = 0
 	total_atoms = 0
 	section = 0
@@ -77,13 +77,15 @@ def innertube(sections):
 			r = (x**2+y**2)**.5
 			if int(split[1]) < 6 and z > 0 and z < tube_length:
 				types[int(split[1])-1][get_section(r,sections,tube_radius)] += 1
-				water_counter += 1
+				water_counter[get_section(r,sections,tube_radius)] += 1
 
 		if total_counter == int(total_atoms):
-			#for i in range(len(types)):
-			#	types[i] = "{:.2f}".format(float(types[i])/float(water_counter))
-			print types
-			water_counter = 0
+			for i in range(len(types)):
+				for j in range(len(types[i])):
+					if water_counter[j] > 0:
+						types[i][j] = "{:.2f}".format(float(types[i][j])/float(water_counter[j]))
+			print frame_counter, types
+			water_counter = [0 for i in range(sections)] 
 			total_counter = 0
 			types = [[0 for i in range(sections)],[0 for i in range(sections)],[0 for i in range(sections)],[0 for i in range(sections)],[0 for i in range(sections)]]
 			atoms = False
