@@ -29,7 +29,7 @@ def innertube(z_sections):
 	types = [0 for i in range(5)]
 	atoms = False
 	frame_counter = 0
-	atom_counter = 0
+	water_counter = 0
 	total_counter = 0
 	total_atoms = 0
 
@@ -39,6 +39,10 @@ def innertube(z_sections):
 	y_high = 0
 	z_low = 0
 	z_high = 0
+	x = 0
+	y = 0
+	z = 0
+	r = 0
 
 	for line in infile:
 		if line == "ITEM: TIMESTEP\n":
@@ -64,16 +68,19 @@ def innertube(z_sections):
 		if atoms:
 			total_counter += 1
 			split = line.split()
+			x = to_normal_coord(x_low, x_high, split[2])
+			y = to_normal_coord(y_low, y_high, split[3])
+			r = (x**2+y**2)**.5
 			z = to_normal_coord(z_low, z_high, split[4])
-			if int(split[1]) < 6 and z > 0 and z < 80:
+			if int(split[1]) < 6 and z > 0 and z < 80 and r > -6.29 and r < 6.29:
 				types[int(split[1])-1] += 1
-				atom_counter += 1
+				water_counter += 1
 
 		if total_counter == int(total_atoms):
 			for i in range(len(types)):
-				types[i] = float(types[i])/float(atom_counter)
+				types[i] = "{:.2f}".format(float(types[i])/float(water_counter))
 			print types
-			atom_counter = 0
+			water_counter = 0
 			total_counter = 0
 			types = [0 for i in range(5)]
 			atoms = False
