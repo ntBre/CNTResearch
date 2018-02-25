@@ -1,10 +1,12 @@
 #Sectional distribution
-def innertube(z_sections):
+def innertube(sections):
 	"""Takes the lampstrj file produced by the CHILL Algorithm and calculates the percent of each type of
 		water, printing these to files for each type of water for plotting"""
 
 #	file_name = raw_input("Enter the file to be read: ")
 	file_name = "vmd.lammpstrj"
+	tube_radius = 6.29
+	tube_length = 80
 	infile = open(file_name, 'r')
 	print(infile, "is being read")
 
@@ -26,12 +28,13 @@ def innertube(z_sections):
 	out4.write("#Frame LDL\n")
 	out5.write("#Frame HDL\n")
 	
-	types = [0 for i in range(5)]
+	types = [[0 for i in range(sections)],[0 for i in range(sections)],[0 for i in range(sections)],[0 for i in range(sections)],[0 for i in range(sections)]]
 	atoms = False
 	frame_counter = 0
 	water_counter = 0
 	total_counter = 0
 	total_atoms = 0
+	section = 0
 
 	x_low = 0
 	x_high = 0
@@ -70,19 +73,19 @@ def innertube(z_sections):
 			split = line.split()
 			x = to_normal_coord(x_low, x_high, split[2])
 			y = to_normal_coord(y_low, y_high, split[3])
-			r = (x**2+y**2)**.5
 			z = to_normal_coord(z_low, z_high, split[4])
-			if int(split[1]) < 6 and z > 0 and z < 80 and r > -6.29 and r < 6.29:
-				types[int(split[1])-1] += 1
+			r = (x**2+y**2)**.5
+			if int(split[1]) < 6 and z > 0 and z < tube_length:
+				types[int(split[1])-1][get_section(r,sections,tube_radius)] += 1
 				water_counter += 1
 
 		if total_counter == int(total_atoms):
-			for i in range(len(types)):
-				types[i] = "{:.2f}".format(float(types[i])/float(water_counter))
+			#for i in range(len(types)):
+			#	types[i] = "{:.2f}".format(float(types[i])/float(water_counter))
 			print types
 			water_counter = 0
 			total_counter = 0
-			types = [0 for i in range(5)]
+			types = [[0 for i in range(sections)],[0 for i in range(sections)],[0 for i in range(sections)],[0 for i in range(sections)],[0 for i in range(sections)]]
 			atoms = False
 
 def skip(iterator, file, num):
@@ -101,5 +104,8 @@ def to_normal_coord(low, high, relative_coord):
 	converted_coord = (high - low)*relative_coord + low
 	return converted_coord
 
-innertube(5)
+def get_section(r, num_sections, tube_radius):
+	section = int(r / (tube_radius / num_sections))
+	return section
 
+innertube(5)
