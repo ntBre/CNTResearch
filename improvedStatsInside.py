@@ -22,6 +22,8 @@ def innertube(sections):
 	out4 = open(out_name4, 'w')
 	out5 = open(out_name5, 'w')
 
+	out_list = [out1, out2, out3, out4, out5]
+
 	out1.write("#Frame Proportion Hexagonal Ice \n")
 	out2.write("#Frame Cubic Ice\n")
 	out3.write("#Frame Interfacial\n")
@@ -81,13 +83,18 @@ def innertube(sections):
 
 		if total_counter == int(total_atoms):
 			for i in range(len(types)):
+				out_list[i].write(str(frame_counter))
 				for j in range(len(types[i])):
 					if water_counter[j] > 0:
-						types[i][j] = "{:.2f}".format(float(types[i][j])/float(water_counter[j]))
-			print frame_counter, types
+						types[i][j] = " {:.2f} ".format(float(types[i][j])/float(water_counter[j]))
+					else:
+						types[i][j] = " {:.2f} ".format(float(types[i][j]))
+					out_list[i].write(types[i][j])
+				out_list[i].write("\n")
+
 			water_counter = [0 for i in range(sections)] 
 			total_counter = 0
-			types = [[0 for i in range(sections)],[0 for i in range(sections)],[0 for i in range(sections)],[0 for i in range(sections)],[0 for i in range(sections)]]
+			types = [[0] * 5 for i in range(sections)]
 			atoms = False
 
 def skip(iterator, file, num):
