@@ -6,13 +6,15 @@ def innertube(sections):
 	file_name = ""	
 	tube_radius = 6.29
 	tube_length = 80
-	types = [[0] * 5 for i in range(sections)]
+	types = [[0] * sections for i in range(5)]
+	average_types = [[0] * sections for i in range(5)]
 	atoms = False
 	frame_counter = 0
 	water_counter = [0 for i in range(sections)] 
 	total_counter = 0
 	total_atoms = 0
 	section = 0
+	total_waters = 0
 
 	x_low = 0
 	x_high = 0
@@ -28,27 +30,12 @@ def innertube(sections):
 	while file_name == "":
 		file_name = raw_input("Enter the file to be read: ")
 	with open(file_name, 'r') as infile:
+
 		print(infile, "is being read")
 
-		out_name1 = file_name + ".hex.perc"
-		out_name2 = file_name + ".cub.perc"
-		out_name3 = file_name + ".ifcl.perc"
-		out_name4 = file_name + ".ldl.perc"
-		out_name5 = file_name + ".hdl.perc" 
-
+		out_name1 = file_name + ".density"
 		out1 = open(out_name1, 'w')
-		out2 = open(out_name2, 'w')
-		out3 = open(out_name3, 'w')
-		out4 = open(out_name4, 'w')
-		out5 = open(out_name5, 'w')
-
-		out_list = [out1, out2, out3, out4, out5]
-
-		out1.write("#Frame Proportion Hexagonal Ice \n")
-		out2.write("#Frame Cubic Ice\n")
-		out3.write("#Frame Interfacial\n")
-		out4.write("#Frame LDL\n")
-		out5.write("#Frame HDL\n")
+		out1.write("#Radius, Percent of Waters\n")
 
 		for line in infile:
 			if line == "ITEM: TIMESTEP\n":
@@ -84,20 +71,19 @@ def innertube(sections):
 
 			if total_counter == int(total_atoms):
 				for i in range(len(types)):
-					out_list[i].write(str(frame_counter))
 					for j in range(len(types[i])):
 						if water_counter[j] > 0:
-							types[i][j] = " {:.2f} ".format(float(types[i][j])/float(water_counter[j]))
+							average_types[i][j] += (float(types[i][j])/float(water_counter[j]))
 						else:
-							types[i][j] = " {:.2f} ".format(float(types[i][j]))
-						out_list[i].write(types[i][j])
-					out_list[i].write("\n")
-				water_counter = [0 for i in range(sections)] 
+							average_types[i][j] += (float(types[i][j]))
 				total_counter = 0
-				types = [[0] * 5 for i in range(sections)]
+				types = [[0] * sections for i in range(5)]
 				atoms = False
 	infile.close()
-
+	for i in range(len(water_counter)):
+		total_waters += float(water_counter[i])
+	for i in range(len(water_counter)):
+		out1.writelines(str(i)+" "+str(water_counter[i]/total_waters)+"\n")
 def skip(iterator, file, num):
 	"""Skips nLines in the file infile"""
 
@@ -120,4 +106,4 @@ def get_section(r, num_sections, tube_radius):
 	section = int(r / (tube_radius / num_sections))
 	return section
 
-innertube(5)
+innertube(10)
