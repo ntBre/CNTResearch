@@ -6,14 +6,11 @@ def innertube(sections):
 	file_name = ""	
 	tube_radius = 6.29
 	tube_length = 80
-	types = [[0] * sections for i in range(5)]
-	average_types = [[0] * sections for i in range(5)]
 	atoms = False
 	frame_counter = 0
 	water_counter = [0 for i in range(sections)] 
 	total_counter = 0
 	total_atoms = 0
-	section = 0
 	total_waters = 0
 
 	x_low = 0
@@ -66,24 +63,19 @@ def innertube(sections):
 				z = to_normal_coord(z_low, z_high, split[4])
 				r = (x**2+y**2)**.5
 				if int(split[1]) < 6 and z > 0 and z < tube_length:
-					types[int(split[1])-1][get_section(r,sections,tube_radius)] += 1
 					water_counter[get_section(r,sections,tube_radius)] += 1
 
 			if total_counter == int(total_atoms):
-				for i in range(len(types)):
-					for j in range(len(types[i])):
-						if water_counter[j] > 0:
-							average_types[i][j] += (float(types[i][j])/float(water_counter[j]))
-						else:
-							average_types[i][j] += (float(types[i][j]))
 				total_counter = 0
-				types = [[0] * sections for i in range(5)]
 				atoms = False
+
 	infile.close()
+
 	for i in range(len(water_counter)):
 		total_waters += float(water_counter[i])
 	for i in range(len(water_counter)):
 		out1.writelines(str(i)+" "+str(water_counter[i]/total_waters)+"\n")
+
 def skip(iterator, file, num):
 	"""Skips nLines in the file infile"""
 
