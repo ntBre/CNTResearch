@@ -6,7 +6,7 @@ def innertube(sections):
 	file_name = ""	
 	tube_radius = 6.29
 	tube_length = 80
-	types = [[0] * 5 for i in range(sections)]
+	types = [[0] * sections for i in range(5)]
 	atoms = False
 	frame_counter = 0
 	water_counter = [0 for i in range(sections)] 
@@ -94,7 +94,7 @@ def innertube(sections):
 					out_list[i].write("\n")
 				water_counter = [0 for i in range(sections)] 
 				total_counter = 0
-				types = [[0] * 5 for i in range(sections)]
+				types = [[0] * sections for i in range(5)]
 				atoms = False
 	infile.close()
 
